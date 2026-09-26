@@ -17,6 +17,9 @@ export const getViewer = cache(async () => {
     .from(staff)
     .innerJoin(clinics, eq(staff.clinicId, clinics.id))
     .where(eq(staff.clerkUserId, userId))
+    // A login can belong to several clinics (e.g. the sample plus its own);
+    // the most recently joined (or re-opened) one is the workspace.
+    .orderBy(desc(staff.createdAt))
     .limit(1);
   const [patientRow] = await db
     .select({ patient: patients, clinic: clinics })

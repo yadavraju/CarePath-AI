@@ -19,8 +19,9 @@ const KIND_LABEL: Record<DocumentKind, string> = {
   faq: "FAQ",
 };
 
-export default async function Protocols() {
+export default async function Protocols({ searchParams }: PageProps<"/clinic/protocols">) {
   const { clinic } = await requireStaff();
+  const { uploaded } = await searchParams;
   const docs = await db.select().from(documents).where(eq(documents.clinicId, clinic.id)).orderBy(desc(documents.createdAt));
   const counts = await db
     .select({ documentId: knowledgeChunks.documentId, n: count() })
@@ -45,7 +46,21 @@ export default async function Protocols() {
         </Link>
       </div>
 
-      <section className={`${CARD} overflow-hidden`}>
+      {uploaded === "1" && (
+        <div className="rounded-2xl bg-teal-soft px-5 py-4 text-[14px] text-teal-deep ring-1 ring-teal/20">
+          <p className="font-display font-semibold">Your protocol is processed and saved as a draft.</p>
+          <p className="mt-0.5">Check it below, then press Approve so the patient companion can answer from it.</p>
+        </div>
+      )}
+
+      {docs.length === 0 && (
+        <div className={`${CARD} p-6 text-center`}>
+          <p className="font-display text-[15px] font-semibold text-ink">No documents yet</p>
+          <p className="mt-1 text-[13.5px] text-ink-soft">Add your protocol below, or import it from your website.</p>
+        </div>
+      )}
+
+      <section className={`${CARD} overflow-hidden ${docs.length === 0 ? "hidden" : ""}`}>
         <table className="w-full text-left text-[14px]">
           <thead className="bg-canvas font-display text-[12px] uppercase tracking-[0.08em] text-ink-faint">
             <tr>

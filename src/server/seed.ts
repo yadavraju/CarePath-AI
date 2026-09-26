@@ -37,16 +37,14 @@ function hhmm(d: Date) {
  * rehearsals without signing up again.
  */
 export async function seedDemoClinic() {
-  const now = new Date();
-  const today = localDate(now, CLINIC_TZ);
-
   const [existing] = await db.select().from(clinics).where(eq(clinics.slug, DEMO_CLINIC.slug));
-  let keepStaff: { clerkUserId: string; name: string; role: StaffRole }[] = [];
+  let keepStaff: { clerkUserId: string; name: string; role: StaffRole; createdAt: Date }[] = [];
   let keepPatientUser: string | null = null;
   if (existing) {
     keepStaff = (await db.select().from(staff).where(eq(staff.clinicId, existing.id)))
       .filter((s) => s.clerkUserId)
-      .map((s) => ({ clerkUserId: s.clerkUserId!, name: s.name, role: s.role }));
+      // createdAt is kept: it decides which clinic is a login's active workspace.
+      .map((s) => ({ clerkUserId: s.clerkUserId!, name: s.name, role: s.role, createdAt: s.createdAt }));
     const [lead] = await db
       .select()
       .from(patients)
@@ -59,11 +57,38 @@ export async function seedDemoClinic() {
 
   await db.insert(urgentRules).values(DEFAULT_URGENT_RULES.map((r) => ({ clinicId: clinic.id, label: r.label, phrases: r.phrases })));
 
+  if (keepStaff.length) await db.insert(staff).values(keepStaff.map((s) => ({ ...s, clinicId: clinic.id })));
+
+  await seedSampleContent(clinic.id, { leadUser: keepPatientUser });
+
+  await db.insert(auditEvents).values({
+    clinicId: clinic.id,
+    actorType: "system",
+    actorId: "seed",
+    action: "demo.seeded",
+    summary: "Demo clinic seeded with synthetic patients and sample documents",
+  });
+
+  return clinic;
+}
+
+/**
+ * The sample content: care team, approved guides, Maya plus seventeen other
+ * synthetic cycles, open signals, care library. Used by the demo clinic and,
+ * in demo mode, by a new clinic that asks for mock data. Enrollment codes are
+ * globally unique, so any clinic other than the demo passes a `codeSuffix`.
+ * Returns the lead patient's enrollment code.
+ */
+export async function seedSampleContent(clinicId: string, { leadUser = null, codeSuffix = "" }: { leadUser?: string | null; codeSuffix?: string } = {}) {
+  const clinic = { id: clinicId };
+  const now = new Date();
+  const today = localDate(now, CLINIC_TZ);
+  const leadCode = `${DEMO_PATIENT_CODE}${codeSuffix}`;
+
   const [nurse] = await db
     .insert(staff)
     .values({ clinicId: clinic.id, name: "Nurse Dana (sample)", role: "nurse" })
     .returning();
-  if (keepStaff.length) await db.insert(staff).values(keepStaff.map((s) => ({ ...s, clinicId: clinic.id })));
 
   const docIds: Record<string, string> = {};
   for (const d of DEMO_DOCUMENTS) {
@@ -83,7 +108,7 @@ export async function seedDemoClinic() {
   const mayaStart = addDays(today, -6);
   const [maya] = await db
     .insert(patients)
-    .values({ clinicId: clinic.id, alias: "Maya R.", language: "en", enrollmentCode: DEMO_PATIENT_CODE, clerkUserId: keepPatientUser, isDemoLead: true })
+    .values({ clinicId: clinic.id, alias: "Maya R.", language: "en", enrollmentCode: leadCode, clerkUserId: leadUser, isDemoLead: true })
     .returning();
   const [mayaCycle] = await db
     .insert(cycles)
@@ -136,7 +161,7 @@ export async function seedDemoClinic() {
     const start = addDays(today, -(p.day - 1));
     const [pat] = await db
       .insert(patients)
-      .values({ clinicId: clinic.id, alias: p.alias, language: p.language, enrollmentCode: `${p.alias.split(" ")[0].toUpperCase()}-${p.day}${i}` })
+      .values({ clinicId: clinic.id, alias: p.alias, language: p.language, enrollmentCode: `${p.alias.split(" ")[0].toUpperCase()}-${p.day}${i}${codeSuffix}` })
       .returning();
     const [cyc] = await db
       .insert(cycles)
@@ -238,14 +263,5 @@ export async function seedDemoClinic() {
   }
 
   await seedLibraryAndCare(clinic.id);
-
-  await db.insert(auditEvents).values({
-    clinicId: clinic.id,
-    actorType: "system",
-    actorId: "seed",
-    action: "demo.seeded",
-    summary: "Demo clinic seeded with synthetic patients and sample documents",
-  });
-
-  return clinic;
+  return leadCode;
 }

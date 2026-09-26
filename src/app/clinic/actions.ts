@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { and, eq, gt, inArray, max } from "drizzle-orm";
 import { z } from "zod";
@@ -17,6 +18,7 @@ import {
   messages,
   patients,
   scheduleItems,
+  staff as staffMembers,
   urgentRules,
   type AlertStatus,
   type DocumentKind,
@@ -27,12 +29,15 @@ import { parseProtocol } from "@/lib/ai/protocol";
 import { CLINIC_TZ } from "@/lib/brand";
 import { ParsedItemSchema, expandItems } from "@/lib/protocol/parse";
 import { localDate } from "@/lib/time";
-import { clinicNow, staffForAction } from "@/server/context";
+import { clinicNow, getViewer, staffForAction } from "@/server/context";
 import { setDemoClock, type ClockPreset } from "@/server/demo";
 import { ingestDocument } from "@/server/documents";
 import { CARE_SUGGEST_PROMPT_VERSION, suggestCare } from "@/server/care";
 import { COPILOT_PROMPT_VERSION, runCopilot } from "@/server/copilot";
 import { seedDemoClinic } from "@/server/seed";
+import { translateLocked } from "@/lib/ai/translate";
+import { CopilotActionSchema, type CopilotAction, type CopilotActionResult } from "@/lib/copilotActions";
+import { inviteMessage, newEnrollmentCode, sendInviteEmail } from "@/server/invite";
 import { discoverLinks, extractArticle, findVideoEmbed, safeFetch } from "@/server/webImport";
 
 function refreshClinic() {
@@ -221,6 +226,9 @@ export async function uploadDocument(_prev: { error?: string } | undefined, form
     data: { documentId: doc.id, injectionFlags: doc.injectionFlags },
   });
   refreshClinic();
+  // Only same-app clinic paths, so the hidden field can't become an open redirect.
+  const next = formData.get("next");
+  if (typeof next === "string" && next.startsWith("/clinic/")) redirect(next);
   return {};
 }
 
@@ -333,6 +341,171 @@ export async function activateSchedule(input: z.infer<typeof ActivateSchema>) {
   redirect(`/clinic/patients/${row.patient.id}`);
 }
 
+/* -------------------------------------------------------------- Patients -- */
+
+const AddPatientSchema = z.object({
+  alias: z.string().trim().min(2).max(40),
+  email: z.union([z.literal(""), z.email()]),
+  language: z.enum(["en", "es", "hi", "ne"]),
+  protocolName: z.string().trim().min(2).max(80),
+  startDate: z.iso.date(),
+});
+
+export type AddPatientState =
+  | { error: string }
+  | { patientId: string; alias: string; code: string; joinUrl: string; email: string; emailStatus: "sent" | "not_configured" | "failed" | "no_email"; subject: string; text: string }
+  | undefined;
+
+/**
+ * Adds a patient with an active cycle and a fresh enrollment code, and emails
+ * the invite when an address is given. The address is used to send and is
+ * not stored — the clinic record keeps only the alias.
+ */
+export async function addPatient(_prev: AddPatientState, formData: FormData): Promise<AddPatientState> {
+  const { staff, clinic } = await staffForAction();
+  const parsed = AddPatientSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    const field = String(parsed.error.issues[0]?.path[0]);
+    const msg: Record<string, string> = {
+      alias: "Enter a short alias, e.g. first name and last initial.",
+      email: "That email address doesn't look right.",
+      protocolName: "Enter the protocol name, e.g. Antagonist stimulation.",
+      startDate: "Choose the cycle start date (Day 1).",
+    };
+    return { error: msg[field] ?? "Check the form and try again." };
+  }
+  const { alias, email, language, protocolName, startDate } = parsed.data;
+
+  let patient: typeof patients.$inferSelect | undefined;
+  for (let attempt = 0; attempt < 5 && !patient; attempt++) {
+    const [row] = await db
+      .insert(patients)
+      .values({ clinicId: clinic.id, alias, language, enrollmentCode: newEnrollmentCode() })
+      .onConflictDoNothing({ target: patients.enrollmentCode })
+      .returning();
+    patient = row;
+  }
+  if (!patient) return { error: "Couldn't generate a unique code. Try again." };
+  await db.insert(cycles).values({ clinicId: clinic.id, patientId: patient.id, protocolName, startDate });
+
+  const h = await headers();
+  const origin = h.get("origin") ?? `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host")}`;
+  const joinUrl = `${origin}/join?code=${encodeURIComponent(patient.enrollmentCode)}`;
+  const message = inviteMessage({ clinicName: clinic.name, code: patient.enrollmentCode, joinUrl });
+  const emailStatus = email ? await sendInviteEmail(email, message) : "no_email";
+
+  await db.insert(auditEvents).values({
+    clinicId: clinic.id,
+    patientId: patient.id,
+    actorType: "staff",
+    actorId: staff.id,
+    action: "patient.added",
+    summary: `${staff.name} added ${alias}${emailStatus === "sent" ? " and emailed an invite" : ""}`,
+  });
+  refreshClinic();
+  return { patientId: patient.id, alias, code: patient.enrollmentCode, joinUrl, email, emailStatus, ...message };
+}
+
+/**
+ * A message from the care team into the patient's chat, translated to their
+ * language when possible (the English original is kept for staff).
+ */
+export async function sendStaffMessage(patientId: string, text: string) {
+  const { staff, clinic } = await staffForAction();
+  const body = z.string().trim().min(2).max(1000).parse(text);
+  const [row] = await db
+    .select({ patient: patients, cycle: cycles })
+    .from(patients)
+    .innerJoin(cycles, eq(cycles.patientId, patients.id))
+    .where(and(eq(patients.id, patientId), eq(patients.clinicId, clinic.id), eq(cycles.status, "active")));
+  if (!row) throw new Error("Not found");
+  const translated = await translateLocked(body, row.patient.language).catch(() => null);
+  await db.insert(messages).values({
+    clinicId: clinic.id,
+    cycleId: row.cycle.id,
+    patientId: row.patient.id,
+    role: "staff",
+    content: translated?.text ?? body,
+    contentEnglish: translated ? body : null,
+    language: translated ? row.patient.language : "en",
+    meta: { staffName: staff.name },
+  });
+  await db.insert(auditEvents).values({
+    clinicId: clinic.id,
+    patientId: row.patient.id,
+    actorType: "staff",
+    actorId: staff.id,
+    action: "message.sent",
+    summary: `${staff.name} messaged ${row.patient.alias}: “${body.slice(0, 80)}”`,
+  });
+  refreshClinic();
+  revalidatePath("/patient");
+  return row.patient.alias;
+}
+
+/* --------------------------------------------------------- Copilot agent -- */
+
+/** Runs one copilot proposal after staff confirm it — through the same actions the UI uses. */
+export async function runCopilotAction(input: CopilotAction): Promise<CopilotActionResult> {
+  const { staff, clinic } = await staffForAction();
+  const parsed = CopilotActionSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "That action is no longer valid." };
+  const action = parsed.data;
+  try {
+    switch (action.type) {
+      case "alert":
+        await updateAlert(action.alertId, action.status);
+        return { ok: true, note: `Marked ${action.status === "contacted" ? "as contacted" : action.status}` };
+      case "resolve_all":
+        await bulkResolveForPatient(action.patientId);
+        return { ok: true, note: "All open items resolved", href: `/clinic/patients/${action.patientId}` };
+      case "message_patient": {
+        const alias = await sendStaffMessage(action.patientId, action.text);
+        return { ok: true, note: `Sent to ${alias}`, href: `/clinic/patients/${action.patientId}` };
+      }
+      case "assign_care":
+        await assignCareItem({ patientId: action.patientId, libraryItemId: action.libraryItemId, note: action.note, dueDate: action.dueDate, aiSuggested: true });
+        return { ok: true, note: "Assigned", href: `/clinic/patients/${action.patientId}` };
+      case "add_patient": {
+        const fd = new FormData();
+        for (const [k, v] of Object.entries(action)) if (k !== "type") fd.set(k, String(v));
+        const res = await addPatient(undefined, fd);
+        if (!res || "error" in res) return { ok: false, error: res?.error ?? "Couldn't add the patient." };
+        const sent = res.emailStatus === "sent" ? ` · invite emailed to ${res.email}` : "";
+        return { ok: true, note: `Added ${res.alias} · code ${res.code}${sent}`, href: `/clinic/patients/${res.patientId}` };
+      }
+      case "ai_pause":
+        await setAiPaused(action.paused);
+        return { ok: true, note: action.paused ? "AI answers paused" : "AI answers resumed" };
+    }
+  } catch (err) {
+    await db.insert(auditEvents).values({
+      clinicId: clinic.id,
+      actorType: "staff",
+      actorId: staff.id,
+      action: "copilot.action_failed",
+      summary: `${staff.name} confirmed a copilot action that failed (${action.type})`,
+    });
+    return { ok: false, error: err instanceof Error && err.message !== "Not found" ? err.message : "Couldn't do that — it may have changed already." };
+  }
+}
+
+/* ------------------------------------------------------------ Workspace -- */
+
+/** Make another clinic this login belongs to the active one (newest membership wins, see getViewer). */
+export async function switchClinic(clinicId: string) {
+  const viewer = await getViewer();
+  if (!viewer) throw new Error("Not authorised");
+  const [row] = await db
+    .update(staffMembers)
+    .set({ createdAt: new Date() })
+    .where(and(eq(staffMembers.clinicId, clinicId), eq(staffMembers.clerkUserId, viewer.userId)))
+    .returning();
+  if (!row) throw new Error("Not a member of that clinic");
+  refreshClinic();
+  redirect("/clinic");
+}
+
 /* ------------------------------------------------------------------ Demo -- */
 
 export async function resetDemo() {
@@ -386,7 +559,7 @@ export async function askCopilot(history: { role: "user" | "assistant"; text: st
     actorId: reply.model,
     action: "copilot.answered",
     summary: `Copilot answered ${staff.name}: “${turns[turns.length - 1].text.slice(0, 80)}”`,
-    data: { tools: reply.tools, promptVersion: COPILOT_PROMPT_VERSION, fallback: reply.fallback },
+    data: { tools: reply.tools, promptVersion: COPILOT_PROMPT_VERSION, fallback: reply.fallback, staged: reply.proposals.map((p) => p.action.type) },
   });
   return reply;
 }

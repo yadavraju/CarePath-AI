@@ -21,9 +21,11 @@ export async function linkDemoRoles(userId: string, name = "Demo Judge") {
 
   const [existing] = await db.select().from(staff).where(and(eq(staff.clinicId, clinic.id), eq(staff.clerkUserId, userId)));
   if (!existing) await db.insert(staff).values({ clinicId: clinic.id, clerkUserId: userId, name, role: "coordinator" });
+  // The newest membership is the active workspace, so opening the demo switches to it.
+  else await db.update(staff).set({ createdAt: new Date() }).where(eq(staff.id, existing.id));
 
   // One patient record per login; the demo patient follows whoever opens the demo.
-  await db.update(patients).set({ clerkUserId: null }).where(and(eq(patients.clerkUserId, userId), ne(patients.isDemoLead, true)));
+  await db.update(patients).set({ clerkUserId: null }).where(and(eq(patients.clerkUserId, userId), ne(patients.clinicId, clinic.id)));
   await db
     .update(patients)
     .set({ clerkUserId: userId })

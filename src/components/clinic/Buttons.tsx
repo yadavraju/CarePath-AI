@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useFormStatus } from "react-dom";
 import { Check, PhoneOutgoing, ThumbsUp, TriangleAlert, CircleDashed, CheckCheck } from "lucide-react";
 import { reviewAnswer, updateAlert } from "@/app/clinic/actions";
 import { BTN_SM } from "@/components/ui";
@@ -55,5 +56,15 @@ export function ReviewButtons({ messageId, current }: { messageId: string; curre
         </button>
       ))}
     </div>
+  );
+}
+
+/** Submit button for a plain server-action form; disabled with a label while it runs. */
+export function PendingSubmit({ children, pendingLabel, className }: { children: React.ReactNode; pendingLabel: string; className?: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <button disabled={pending} className={className}>
+      {pending ? pendingLabel : children}
+    </button>
   );
 }

@@ -129,6 +129,13 @@ export function AskPanel({ initial, suggestions, language, urgentLine, urgentLin
             <p key={m.id} className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-ink px-4 py-2.5 text-[14.5px] text-white">
               {m.content}
             </p>
+          ) : m.role === "staff" ? (
+            <div key={m.id} className="w-fit max-w-[90%] rounded-2xl rounded-bl-md bg-teal-soft px-4 py-3 ring-1 ring-teal/20">
+              <p className="flex items-center gap-1.5 font-display text-[12px] font-semibold text-teal-deep">
+                <UserRound className="h-3.5 w-3.5" /> {m.meta?.staffName ?? "Your care team"}
+              </p>
+              <p className="mt-1 text-[14.5px] leading-relaxed text-ink">{m.content}</p>
+            </div>
           ) : (
             <Reply key={m.id} m={m} tel={tel} urgentLine={urgentLine} urgentLineLabel={urgentLineLabel} language={language} />
           ),

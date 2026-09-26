@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { and, eq, ne } from "drizzle-orm";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, UserPlus } from "lucide-react";
 import { Chip, Dot, EYEBROW } from "@/components/ui";
 import { db } from "@/db";
 import { alerts, cycles, patients } from "@/db/schema";
@@ -23,10 +23,23 @@ export default async function Patients() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 lg:px-8">
-      <p className={EYEBROW}>Active cycles</p>
-      <h1 className="mt-1 font-display text-[26px] font-bold tracking-[-0.02em] text-ink">Patients · {rows.length}</h1>
-      <p className="mt-1 text-[14px] text-ink-soft">Synthetic records in a fictional clinic.</p>
-      <div className="mt-6 overflow-hidden rounded-2xl bg-raised ring-1 ring-line">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className={EYEBROW}>Active cycles</p>
+          <h1 className="mt-1 font-display text-[26px] font-bold tracking-[-0.02em] text-ink">Patients · {rows.length}</h1>
+          {clinic.isDemo && <p className="mt-1 text-[14px] text-ink-soft">Synthetic records in a fictional clinic.</p>}
+        </div>
+        <Link href="/clinic/patients/new" className="inline-flex h-10 items-center gap-2 rounded-full bg-navy px-4 font-display text-[13.5px] font-semibold text-white">
+          <UserPlus className="h-4 w-4" /> Add patient
+        </Link>
+      </div>
+      {rows.length === 0 && (
+        <div className="mt-6 rounded-2xl bg-raised p-8 text-center ring-1 ring-line">
+          <p className="font-display text-[15px] font-semibold text-ink">No patients yet</p>
+          <p className="mt-1 text-[13.5px] text-ink-soft">Add a patient to send them an invite with their enrollment code.</p>
+        </div>
+      )}
+      <div className={`mt-6 overflow-hidden rounded-2xl bg-raised ring-1 ring-line ${rows.length === 0 ? "hidden" : ""}`}>
         {rows.map(({ patient, cycle }) => {
           const mine = open.filter((a) => a.patientId === patient.id);
           const red = mine.some((a) => a.severity === "red");

@@ -204,7 +204,15 @@ export default async function PatientCard({ params }: PageProps<"/clinic/patient
               ) : (
                 <div key={m.id} className="ml-6 rounded-xl bg-canvas p-3">
                   <p className="flex flex-wrap items-center gap-2 font-display text-[12px] font-semibold text-ink-soft">
-                    <Bot className="h-3.5 w-3.5" /> {m.outcome ? OUTCOME_LABEL[m.outcome] : "Assistant"}
+                    {m.role === "staff" ? (
+                      <>
+                        <UserRound className="h-3.5 w-3.5" /> Care team · {m.meta?.staffName ?? "Staff"} · {timeAgo(m.createdAt)} ago
+                      </>
+                    ) : (
+                      <>
+                        <Bot className="h-3.5 w-3.5" /> {m.outcome ? OUTCOME_LABEL[m.outcome] : "Assistant"}
+                      </>
+                    )}
                   </p>
                   {m.contentEnglish ? (
                     <div className="mt-1.5 grid gap-2 md:grid-cols-2">

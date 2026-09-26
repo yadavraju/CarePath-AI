@@ -73,6 +73,8 @@ export type MessageMeta = {
   confidence?: number;
   retrievalScore?: number;
   translationLocked?: string[];
+  /** Care-team messages: who sent it. */
+  staffName?: string;
 };
 
 export const clinics = pgTable("clinics", {

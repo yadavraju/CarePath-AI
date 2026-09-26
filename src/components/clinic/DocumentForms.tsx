@@ -21,13 +21,14 @@ export function DocStatusButtons({ id, status }: { id: string; status: DocumentS
   );
 }
 
-export function UploadForm() {
+export function UploadForm({ defaultKind = "medication_guide", next, submitLabel = "Upload as draft" }: { defaultKind?: string; next?: string; submitLabel?: string }) {
   const [state, action, pending] = useActionState(uploadDocument, undefined);
   return (
     <form action={action} className="mt-4 grid gap-3">
+      {next && <input type="hidden" name="next" value={next} />}
       <div className="grid gap-3 sm:grid-cols-[1fr_220px]">
         <input name="title" placeholder="Title, e.g. Stimulation Medication Guide" className={INPUT} required />
-        <select name="kind" className={INPUT} defaultValue="medication_guide">
+        <select name="kind" className={INPUT} defaultValue={defaultKind}>
           <option value="medication_guide">Medication guide</option>
           <option value="missed_dose">Missed-dose guide</option>
           <option value="symptom_guide">Symptom guide</option>
@@ -47,7 +48,7 @@ export function UploadForm() {
           <input type="file" name="file" accept="application/pdf,text/plain" className="sr-only" />
         </label>
         <button disabled={pending} className="inline-flex h-10 items-center rounded-full bg-ink px-5 font-display text-[14px] font-semibold text-white disabled:opacity-50">
-          {pending ? "Uploading…" : "Upload as draft"}
+          {pending ? "Processing…" : submitLabel}
         </button>
         {state?.error && <p className="text-[13px] text-alert">{state.error}</p>}
       </div>

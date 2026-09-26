@@ -6,11 +6,18 @@ import { listExceptions } from "@/server/copilot";
 
 export const dynamic = "force-dynamic";
 
+// Action-first starters; the sample clinic's name its patients.
+const DEMO_STARTERS = [
+  "Who needs me first?",
+  "Mark Priya as contacted",
+  "Message Ana that her nurse will call her today",
+  "Assign the injection video to Maya, due in 2 days",
+];
 const STARTERS = [
   "Who needs me first?",
-  "Summarize Maya’s last 24 hours",
+  "Add a patient: Sara K., antagonist protocol, Day 1 today",
   "Which consents are still unsigned?",
-  "What does our guide say about a late Menopur dose?",
+  "Pause AI answers",
 ];
 
 export default async function CopilotHome() {
@@ -34,8 +41,8 @@ export default async function CopilotHome() {
   const urgent = exceptions.filter((e) => e.severity === "red" && e.status === "open").length;
   const subtitle =
     seen.size === 0
-      ? "No open exceptions. Ask anything about your patients or protocols."
-      : `${seen.size} patient${seen.size === 1 ? "" : "s"} need you${urgent ? ` · ${urgent} urgent` : ""}. Ask me anything about them.`;
+      ? "No open exceptions. Tell me what to get done."
+      : `${seen.size} patient${seen.size === 1 ? "" : "s"} need you${urgent ? ` · ${urgent} urgent` : ""}. I can handle the follow-ups — you confirm each one.`;
 
-  return <CopilotChat greeting={`Good ${part}, ${staff.name.split(" ")[0]}`} subtitle={subtitle} starters={STARTERS} needs={needs} />;
+  return <CopilotChat greeting={`Good ${part}, ${staff.name.split(" ")[0]}`} subtitle={subtitle} starters={clinic.isDemo ? DEMO_STARTERS : STARTERS} needs={needs} />;
 }

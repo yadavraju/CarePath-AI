@@ -1,14 +1,24 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import { ArrowRight, HeartPulse, Stethoscope } from "lucide-react";
 import { CARD, EYEBROW, Wordmark } from "@/components/ui";
 import { DEMO_PATIENT_CODE } from "@/demo/content";
 import { getViewer } from "@/server/context";
+import { demoEnabled } from "@/server/demoAccess";
 import { joinDemoClinicAsStaff } from "./actions";
 import { CodeForm } from "./CodeForm";
+import { CreateClinicForm } from "./CreateClinicForm";
 
-export default async function Onboarding() {
+export default async function Onboarding({ searchParams }: PageProps<"/onboarding">) {
+  const { code, setup } = await searchParams;
+  const inviteCode = typeof code === "string" ? code : undefined;
   const viewer = await getViewer();
+  // Clinicians already on a clinic go straight to it, unless they asked to set up another one.
+  if (viewer?.staff && !inviteCode && setup !== "1") redirect("/clinic");
+  const user = viewer ? await currentUser() : null;
+  const defaultName = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || undefined;
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-soft to-canvas">
       <header className="mx-auto flex max-w-4xl items-center justify-between px-5 py-5">
@@ -42,7 +52,7 @@ export default async function Onboarding() {
         )}
 
         <div className="mt-10 grid gap-4 md:grid-cols-2">
-          <section className={`${CARD} p-7`}>
+          <section className={`${CARD} p-7 ${inviteCode ? "ring-2 ring-teal" : ""}`}>
             <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-soft text-teal-deep">
               <HeartPulse className="h-5 w-5" />
             </span>
@@ -50,27 +60,30 @@ export default async function Onboarding() {
             <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">
               Enter the enrollment code from your clinic to connect your current protocol.
             </p>
-            <CodeForm />
+            <CodeForm defaultCode={inviteCode} />
             <p className="mt-3 font-display text-[12.5px] text-ink-faint">
               Demo codes: <code className="rounded bg-sunken px-1.5 py-0.5 font-semibold text-ink">0000</code> (clinic + patient) ·{" "}
               <code className="rounded bg-sunken px-1.5 py-0.5 font-semibold text-ink">{DEMO_PATIENT_CODE}</code> (patient Maya R., Day 7)
             </p>
           </section>
 
-          <section className={`${CARD} p-7`}>
+          <section id="clinic" className={`${CARD} scroll-mt-6 p-7`}>
             <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-navy text-white">
               <Stethoscope className="h-5 w-5" />
             </span>
-            <h2 className="mt-4 font-display text-[18px] font-semibold text-ink">I’m on a clinic team</h2>
+            <h2 className="mt-4 font-display text-[18px] font-semibold text-ink">I’m a clinician — set up my clinic</h2>
             <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">
-              Join the sample clinic as a coordinator to see who needs attention, patient cards and controls.
+              Create your clinic workspace. Next you’ll add your protocol document so Aama can answer from it — or skip and do it later.
             </p>
-            <form action={joinDemoClinicAsStaff} className="mt-5">
-              <button className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-navy font-display text-[15px] font-semibold text-white transition hover:bg-navy/90">
-                Join Harbor Fertility (sample) <ArrowRight className="h-4 w-4" />
-              </button>
-            </form>
-            <p className="mt-3 font-display text-[12.5px] text-ink-faint">In production, staff are invited by their clinic admin.</p>
+            <CreateClinicForm defaultName={defaultName} allowSample={demoEnabled()} />
+            <div className="mt-5 border-t border-line pt-4">
+              <p className="font-display text-[12.5px] text-ink-faint">Just looking? Explore the sample clinic on mock data.</p>
+              <form action={joinDemoClinicAsStaff} className="mt-2">
+                <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full bg-raised font-display text-[14px] font-semibold text-ink ring-1 ring-line transition hover:ring-ink/25">
+                  Join Harbor Fertility (sample) <ArrowRight className="h-4 w-4" />
+                </button>
+              </form>
+            </div>
           </section>
         </div>
       </main>

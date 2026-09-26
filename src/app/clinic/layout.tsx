@@ -1,14 +1,15 @@
 import Link from "next/link";
-import { and, asc, eq, ne } from "drizzle-orm";
-import { BotOff, HeartPulse } from "lucide-react";
+import { and, asc, desc, eq, ne } from "drizzle-orm";
+import { ArrowLeftRight, BotOff, HeartPulse, Plus } from "lucide-react";
 import { AutoRefresh } from "@/components/clinic/AutoRefresh";
 import { DemoGuide } from "@/components/DemoGuide";
 import { AppShell, RailSection, type NavItem } from "@/components/shell/AppShell";
 import { Dot } from "@/components/ui";
 import { db } from "@/db";
-import { alerts, patients } from "@/db/schema";
+import { alerts, clinics, patients, staff } from "@/db/schema";
 import { getViewer, requireStaff } from "@/server/context";
 import { sweepMissed } from "@/server/reminders";
+import { switchClinic } from "./actions";
 
 export default async function ClinicLayout({ children }: { children: React.ReactNode }) {
   const { clinic } = await requireStaff();
@@ -38,6 +39,18 @@ export default async function ClinicLayout({ children }: { children: React.React
     { href: "/clinic/settings", label: "Controls", icon: "controls" },
   ];
 
+
+  // Other clinics this login belongs to, for the workspace switcher.
+  const otherClinics = viewer
+    ? await db
+        .select({ id: clinics.id, name: clinics.name, isDemo: clinics.isDemo })
+        .from(staff)
+        .innerJoin(clinics, eq(staff.clinicId, clinics.id))
+        .where(and(eq(staff.clerkUserId, viewer.userId), ne(clinics.id, clinic.id)))
+        .orderBy(desc(staff.createdAt))
+    : [];
+  // Offer clinic sign-up only to people exploring the sample who have no clinic of their own yet.
+  const offerSetup = clinic.isDemo && !otherClinics.some((c) => !c.isDemo);
 
   const [demoLead] = clinic.isDemo
     ? await db.select({ id: patients.id }).from(patients).where(and(eq(patients.clinicId, clinic.id), eq(patients.isDemoLead, true)))
@@ -76,11 +89,25 @@ export default async function ClinicLayout({ children }: { children: React.React
         </RailSection>
       }
       railFooter={
-        viewer?.patient ? (
-          <Link href="/patient" className="flex items-center gap-2 rounded-lg px-2 py-1.5 font-display text-[12.5px] font-semibold text-ink-soft hover:bg-sunken hover:text-ink">
-            <HeartPulse className="h-4 w-4 text-teal" /> Switch to patient view
-          </Link>
-        ) : null
+        <div className="space-y-0.5">
+          {otherClinics.filter((c) => clinic.isDemo || !c.isDemo).map((c) => (
+            <form key={c.id} action={switchClinic.bind(null, c.id)}>
+              <button className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left font-display text-[12.5px] font-semibold text-ink-soft hover:bg-sunken hover:text-ink">
+                <ArrowLeftRight className="h-4 w-4 shrink-0 text-ink-faint" /> <span className="truncate">Switch to {c.name}</span>
+              </button>
+            </form>
+          ))}
+          {offerSetup && (
+            <Link href="/onboarding?setup=1#clinic" className="flex items-center gap-2 rounded-lg px-2 py-1.5 font-display text-[12.5px] font-semibold text-ink-soft hover:bg-sunken hover:text-ink">
+              <Plus className="h-4 w-4 text-ink-faint" /> Set up your own clinic
+            </Link>
+          )}
+          {viewer?.patient && (
+            <Link href="/patient" className="flex items-center gap-2 rounded-lg px-2 py-1.5 font-display text-[12.5px] font-semibold text-ink-soft hover:bg-sunken hover:text-ink">
+              <HeartPulse className="h-4 w-4 text-teal" /> Switch to patient view
+            </Link>
+          )}
+        </div>
       }
     >
       <AutoRefresh everyMs={8000} />
