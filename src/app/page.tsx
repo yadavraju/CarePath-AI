@@ -28,7 +28,6 @@ export default function Landing() {
         <WhySpecialist />
         <Platform />
         <HowItWorks />
-        <Specialties />
         <FertilitySpotlight />
         <Safety />
         <PilotMeasures />
@@ -65,7 +64,7 @@ function Hero() {
           </h1>
           <p className="subtitle mt-5 max-w-xl text-ink-soft">
             Your patients get an AI companion built from your own protocols — today’s plan, cited answers, videos and consents.
-            Your clinicians get an AI copilot and a queue of only the patients who need a human. One patient journey, both
+            Your clinicians get an AI copilot and a “Needs attention” list of only the patients who need a human. One patient journey, both
             sides of it.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
@@ -85,7 +84,7 @@ function Hero() {
           <div className="absolute -left-10 bottom-10 hidden lg:block">
             <MiniQueueMock />
           </div>
-          <p className="mt-4 text-center font-display text-[12px] text-ink-faint lg:hidden">Patient app · clinician queue shown in the demo</p>
+          <p className="mt-4 text-center font-display text-[12px] text-ink-faint lg:hidden">Patient app · clinician view shown in the demo</p>
         </div>
       </div>
     </section>
@@ -94,14 +93,52 @@ function Hero() {
 
 function SpecialtyStrip() {
   return (
-    <section className="border-y border-line bg-mist">
-      <div className={`${SHELL} flex flex-wrap items-center justify-center gap-x-7 gap-y-3 py-5`}>
-        <span className={EYEBROW}>Built for</span>
-        {SPECIALTIES.map((s) => (
-          <span key={s.id} className="inline-flex items-center gap-2 font-display text-[13.5px] font-medium text-ink-soft">
-            <s.icon className={cn("h-4 w-4", s.status === "live" ? "text-teal" : "text-ink-faint")} /> {s.title}
-          </span>
-        ))}
+    <section id="specialties" className="scroll-mt-20 border-y border-line bg-canvas py-20">
+      <div className={SHELL}>
+        <div className="max-w-3xl">
+          <p className="font-display text-[12px] font-bold uppercase tracking-[0.16em] text-teal-deep">Built for specialist clinics</p>
+          <h2 className="display-2 mt-3 text-balance text-ink">Where one missed step costs a patient — and a practice.</h2>
+          <p className="subtitle mt-4 text-ink-soft">
+            Each specialty gets its own agent: protocol templates, red-flag rules and a question library your clinicians approve
+            before any patient sees them. We start where the stakes are highest.
+          </p>
+        </div>
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {SPECIALTIES.map((s) => {
+            const live = s.status === "live";
+            return (
+              <article
+                key={s.id}
+                className={cn(
+                  "flex flex-col rounded-2xl bg-raised p-6 ring-1 transition-all duration-200 hover:-translate-y-0.5",
+                  live ? "ring-2 ring-teal shadow-[0_20px_50px_-30px_rgba(27,127,121,0.6)]" : "ring-line hover:ring-ink/20",
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <span className={cn("flex h-12 w-12 items-center justify-center rounded-2xl", live ? "bg-teal text-white" : "bg-teal-soft text-teal-deep")}>
+                    <s.icon className="h-6 w-6" />
+                  </span>
+                  <Chip tone={live ? "teal" : "neutral"}>{live ? "Live now" : "Next"}</Chip>
+                </div>
+                <h3 className="mt-5 font-display text-[19px] font-bold tracking-[-0.01em] text-ink">{s.title}</h3>
+                <p className="mt-2 font-display text-[15.5px] font-semibold leading-snug text-ink">{s.stakes}</p>
+                <p className="mt-3 text-[13.5px] leading-relaxed text-ink-soft">
+                  <span className="font-display font-semibold text-teal-deep">Aama handles </span>
+                  {s.handles.charAt(0).toLowerCase() + s.handles.slice(1)}
+                </p>
+                <div className="mt-auto pt-5">
+                  {live ? (
+                    <Link href="/demo" className="inline-flex items-center gap-1.5 font-display text-[14px] font-semibold text-teal-deep hover:underline">
+                      Try the fertility agent <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  ) : (
+                    <span className="font-display text-[13px] text-ink-faint">Coming next</span>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
@@ -204,7 +241,7 @@ function HowItWorks() {
     ["Your clinic sets the truth", "Upload your protocols and guides. Coordinators approve each document and every patient schedule. Only staff change a dose or a time."],
     ["The patient gets a daily companion", "Today’s tasks in plain language, reminders that adapt to what each patient responds to, and one-tap confirmation."],
     ["AI handles bounded questions", "Answers come only from your approved documents, with the page and version shown. Unsupported questions are withheld and routed."],
-    ["Exceptions reach your team", "Urgent symptoms, missed check-ins and unanswered questions land in a ranked queue with the schedule and the message attached."],
+    ["Exceptions reach your team", "Urgent symptoms, missed check-ins and unanswered questions land in one ranked “Needs attention” list with the schedule and the message attached."],
   ];
   return (
     <section id="how" className="scroll-mt-20 py-24">
@@ -226,59 +263,6 @@ function HowItWorks() {
             without evidence. The schedule engine is deterministic.
           </p>
         </div>
-      </div>
-    </section>
-  );
-}
-
-function Specialties() {
-  return (
-    <section id="specialties" className="scroll-mt-20 bg-canvas py-24">
-      <div className={SHELL}>
-        <SectionHead
-          eyebrow="Specialties"
-          title="One platform. An agent for each service line."
-          body="Each specialty agent ships with its own protocol templates, red-flag rules and question library — all approved by your clinicians before a patient sees them. We start where the stakes are highest."
-        />
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {SPECIALTIES.map((s) => {
-            const live = s.status === "live";
-            return (
-              <div key={s.id} className={cn("flex flex-col rounded-2xl p-6 ring-1", live ? "bg-raised ring-teal/40 shadow-[0_20px_50px_-30px_rgba(27,127,121,0.5)] lg:row-span-2" : "bg-raised/70 ring-line")}>
-                <div className="flex items-center justify-between">
-                  <span className={cn("flex h-10 w-10 items-center justify-center rounded-xl", live ? "bg-teal text-white" : "bg-sunken text-ink-soft")}>
-                    <s.icon className="h-5 w-5" />
-                  </span>
-                  <Chip tone={live ? "teal" : "neutral"}>{live ? "Live" : "Next"}</Chip>
-                </div>
-                <h3 className="mt-4 font-display text-[17px] font-semibold text-ink">{s.title}</h3>
-                <p className="mt-2 text-[14.5px] leading-relaxed text-ink">{s.stakes}</p>
-                <p className="mt-3 text-[13.5px] leading-relaxed text-ink-soft">
-                  <span className="font-display font-semibold text-ink-soft">Handles: </span>
-                  {s.handles}
-                </p>
-                {live && (
-                  <>
-                    <ul className="mt-5 space-y-2 border-t border-line pt-5 text-[13.5px] text-ink">
-                      {["Cited answers from your medication guides", "Deterministic stimulation schedules", "Missed-dose routing to the on-call line", "OHSS red-flag escalation", "Spanish, Hindi and Nepali explanations"].map((x) => (
-                        <li key={x} className="flex gap-2">
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-teal" /> {x}
-                        </li>
-                      ))}
-                    </ul>
-                    <Link href="/demo" className="mt-auto inline-flex items-center gap-1.5 pt-6 font-display text-[14px] font-semibold text-teal-deep hover:underline">
-                      Try the fertility agent <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </>
-                )}
-              </div>
-            );
-          })}
-        </div>
-        <p className="mt-4 font-display text-[12.5px] text-ink-faint">
-          “Next” agents are on the roadmap and not yet available. Each launches only after clinician review of its content and
-          escalation rules.
-        </p>
       </div>
     </section>
   );
@@ -412,8 +396,8 @@ function Pricing() {
               $199<span className="font-display text-[16px] text-white/70"> / seat / month</span>
             </p>
             <p className="mt-4 text-[14.5px] leading-relaxed text-white/80">
-              Clinical copilot, exception queue, personalised care plans, care library with e-signature, Protocol Studio, web
-              import, audit history and analytics. Every nurse, coordinator and clinician who works the queue is a seat.
+              Clinical copilot, Needs attention list, personalised care plans, care library with e-signature, Protocol Studio, web
+              import, audit history and analytics. Every nurse, coordinator and clinician who follows up with patients is a seat.
             </p>
           </div>
           <div className={`${CARD} p-7`}>

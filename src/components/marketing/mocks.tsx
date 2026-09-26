@@ -93,7 +93,7 @@ export function MiniQueueMock() {
   return (
     <div className="w-72 rounded-2xl bg-raised p-3.5 ring-1 ring-line shadow-[0_24px_60px_-24px_rgba(23,58,79,0.45)]">
       <p className="flex items-center justify-between px-1 font-display text-[12px] font-semibold text-ink-soft">
-        <span>Nurse queue · Needs you</span>
+        <span>Clinician view · Needs attention</span>
         <span className="rounded-full bg-alert px-1.5 text-[10.5px] font-bold text-white">1</span>
       </p>
       <ul className="mt-2 space-y-1">

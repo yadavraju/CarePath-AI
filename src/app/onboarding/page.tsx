@@ -63,7 +63,7 @@ export default async function Onboarding() {
             </span>
             <h2 className="mt-4 font-display text-[18px] font-semibold text-ink">I’m on a clinic team</h2>
             <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">
-              Join the sample clinic as a coordinator to see the exception queue, patient cards and controls.
+              Join the sample clinic as a coordinator to see who needs attention, patient cards and controls.
             </p>
             <form action={joinDemoClinicAsStaff} className="mt-5">
               <button className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-navy font-display text-[15px] font-semibold text-white transition hover:bg-navy/90">

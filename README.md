@@ -11,7 +11,7 @@ layer the clinic controls.
 | Clinic (`/clinic`) | Patient (`/patient`) |
 |---|---|
 | **Copilot** — chat with Claude over read-only tools (queue, patient summaries, today's doses, care-plan gaps, clinic guides) | **Today** — reminders, schedule changes, what the care team assigned, today's doses, and the companion chat docked at the bottom |
-| **Queue** — ranked exceptions (red → missed → questions), auto-refreshing | **My care** — assigned videos, guides, tasks and consent forms |
+| **Needs attention** — patients who need a human, ranked (red → missed doses → questions), auto-refreshing | **My care** — assigned videos, guides, tasks and consent forms |
 | **Patient card** — alerts with actions, **personal care plan** (assign from library, personal notes, due dates, ✨ AI-suggested next steps), schedule versions, cited conversation, audit trail | **Consent signing** — full text, ✨ plain-language explanation from the form only (any language), typed-name e-signature with SHA-256 record |
 | **Care library** — videos, guides, consents, tasks (assignments snapshot the version) | **Full plan** — the clinic-issued schedule by day |
 | **Protocols & guides**, **Controls** (AI pause, red-flag rules, contact path, demo reset) | Help now, language picker, voice input, read-aloud |

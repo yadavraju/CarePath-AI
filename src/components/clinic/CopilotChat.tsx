@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 type Turn = { role: "user" | "assistant"; text: string; tools?: string[]; model?: string; fallback?: string; patients?: { alias: string; id: string }[] };
 type Need = { patientId: string; alias: string; reason: string; severity: "red" | "amber"; age: string };
 
-const TOOL_LABEL: Record<string, string> = { exceptions: "Queue", adherence: "Today’s doses", guides: "Clinic guides", patients: "Patient list", care: "Care plans" };
+const TOOL_LABEL: Record<string, string> = { exceptions: "Needs attention", adherence: "Today’s doses", guides: "Clinic guides", patients: "Patient list", care: "Care plans" };
 
 export function CopilotChat({ greeting, subtitle, starters, needs }: { greeting: string; subtitle: string; starters: string[]; needs: Need[] }) {
   const [turns, setTurns] = useState<Turn[]>([]);
@@ -89,11 +89,11 @@ export function CopilotChat({ greeting, subtitle, starters, needs }: { greeting:
           ))}
         </div>
         {needs.length > 0 && (
-          <section className="mt-10" aria-label="Needs you now">
+          <section className="mt-10" aria-label="Needs attention now">
             <div className="mb-2 flex items-center justify-between">
-              <h2 className="font-display text-[14px] font-semibold text-ink">Needs you now</h2>
-              <Link href="/clinic/queue" className="inline-flex items-center gap-1 font-display text-[12.5px] font-semibold text-ink-soft hover:text-ink">
-                Full queue <ArrowRight className="h-3.5 w-3.5" />
+              <h2 className="font-display text-[14px] font-semibold text-ink">Needs attention now</h2>
+              <Link href="/clinic/attention" className="inline-flex items-center gap-1 font-display text-[12.5px] font-semibold text-ink-soft hover:text-ink">
+                See all <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
             <div className="grid gap-2.5 sm:grid-cols-3">
@@ -151,7 +151,7 @@ export function CopilotChat({ greeting, subtitle, starters, needs }: { greeting:
         )}
         {pending && (
           <p className="flex items-center gap-2 text-[13.5px] text-ink-soft">
-            <Loader2 className="h-4 w-4 animate-spin" /> Looking through your queue and records…
+            <Loader2 className="h-4 w-4 animate-spin" /> Checking who needs attention and your records…
           </p>
         )}
         {error && <p className="text-[13px] text-alert">{error}</p>}

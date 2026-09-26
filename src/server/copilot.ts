@@ -179,7 +179,7 @@ export async function runCopilot(ctx: Ctx, history: CopilotTurn[]): Promise<Copi
     const tools = [
       betaZodTool({
         name: "list_open_exceptions",
-        description: "List every unresolved alert in the clinic queue, most urgent first, with patient, reason, status and age in minutes.",
+        description: "List every unresolved alert on the clinic’s Needs attention list, most urgent first, with patient, reason, status and age in minutes.",
         inputSchema: z.object({}),
         run: () => track("exceptions", () => listExceptions(ctx)),
       }),

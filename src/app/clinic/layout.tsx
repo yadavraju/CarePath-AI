@@ -31,7 +31,7 @@ export default async function ClinicLayout({ children }: { children: React.React
 
   const nav: NavItem[] = [
     { href: "/clinic", label: "Copilot", icon: "copilot", exact: true },
-    { href: "/clinic/queue", label: "Queue", icon: "queue", badge: redCount || undefined },
+    { href: "/clinic/attention", label: "Needs attention", icon: "queue", badge: redCount || undefined },
     { href: "/clinic/patients", label: "Patients", icon: "patients" },
     { href: "/clinic/library", label: "Care library", icon: "guides" },
     { href: "/clinic/protocols", label: "Protocols & guides", icon: "protocols" },
@@ -58,7 +58,7 @@ export default async function ClinicLayout({ children }: { children: React.React
         ) : null
       }
       rail={
-        <RailSection title={needs.length ? `Needs you · ${needs.length}` : "Needs you"}>
+        <RailSection title={needs.length ? `Needs attention · ${needs.length}` : "Needs attention"}>
           {needs.length === 0 && <p className="px-2.5 py-1.5 text-[12.5px] text-ink-faint">No open exceptions.</p>}
           {needs.map(({ alert, alias }) => (
             <Link

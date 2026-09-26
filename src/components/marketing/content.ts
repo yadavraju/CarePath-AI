@@ -50,7 +50,7 @@ export const PLATFORM: { id: string; icon: LucideIcon; title: string; blurb: str
   {
     id: "queue",
     icon: Siren,
-    title: "Exception Queue",
+    title: "Needs Attention",
     blurb: "Nurses see who needs them — not everyone",
     body: "Urgent symptoms, missed confirmations and unanswered questions arrive ranked, with the schedule, the message and the source attached.",
   },

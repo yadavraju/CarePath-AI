@@ -46,7 +46,7 @@ export function DemoGuide({ mayaId }: { mayaId: string }) {
     { id: "answer", who: "Patient", title: "Ask “How should I store my Gonal-F pen?”", hint: "A cited answer from the clinic’s own document.", href: "/patient" },
     { id: "urgent", who: "Patient", title: "Tap “I have severe stomach pain…”", hint: "Red-flag rule → emergency guidance and a red nurse alert. No AI in the path.", href: "/patient" },
     { id: "sign", who: "Patient", title: "Sign a consent in My care", hint: "Explain it in plain language, then e-sign with your typed name.", href: "/patient/care" },
-    { id: "copilot", who: "Clinic", title: "Ask the copilot “Who needs me first?”", hint: "The AI reads the live queue with read-only tools.", href: "/clinic" },
+    { id: "copilot", who: "Clinic", title: "Ask the copilot “Who needs me first?”", hint: "The AI reads the live Needs attention list with read-only tools.", href: "/clinic" },
     { id: "card", who: "Clinic", title: "Open Maya’s card", hint: "Mark the red alert Contacted; try ✨ Suggest next steps on the care plan.", href: `/clinic/patients/${mayaId}` },
     { id: "protocol", who: "Clinic", title: "Import a protocol", hint: "AI drafts the schedule table; you confirm before it goes live.", href: "/clinic/protocols/import" },
   ];

@@ -60,8 +60,8 @@ export default async function PatientCard({ params }: PageProps<"/clinic/patient
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-8 lg:px-8">
-      <Link href="/clinic/queue" className="inline-flex items-center gap-1 font-display text-[13px] font-semibold text-ink-soft hover:text-ink">
-        <ArrowLeft className="h-4 w-4" /> Queue
+      <Link href="/clinic/attention" className="inline-flex items-center gap-1 font-display text-[13px] font-semibold text-ink-soft hover:text-ink">
+        <ArrowLeft className="h-4 w-4" /> Needs attention
       </Link>
 
       <div className="flex flex-wrap items-end justify-between gap-4">

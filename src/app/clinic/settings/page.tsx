@@ -27,7 +27,7 @@ export default async function Controls() {
             <PauseCircle className="h-4 w-4 text-ink-faint" /> AI answers are {clinic.aiPaused ? "paused" : "on"}
           </h2>
           <p className="mt-1 text-[14px] text-ink-soft">
-            Pausing routes every patient question straight to your queue. Red-flag rules, reminders and the schedule keep
+            Pausing routes every patient question straight to Needs attention. Red-flag rules, reminders and the schedule keep
             working — they don’t depend on AI.
           </p>
         </div>
