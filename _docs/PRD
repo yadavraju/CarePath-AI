@@ -1,0 +1,1241 @@
+Yes. I would **not build a full EngagedMD clone** for a hackathon. EngagedMD has expanded into a broad patient-journey platform with education, signatures, actions, questionnaires, integrations, and workflow automation. ([EngagedMD][1])
+
+Instead, build an **AI-native version where the AI creates and continuously manages the patient journey** from a clinic's existing protocols/documents.
+
+# Product name: **CarePath AI**
+
+**Tagline:**
+
+> **Turn clinical protocols into personalized patient journeys.**
+
+Alternative names if you want something more startup-like:
+
+* **CarePath AI** — clear and enterprise-friendly
+* **JourneyAI** — very aligned with the concept
+* **CarePilot** — AI copilot for patient journeys
+* **Pathly Health** — more consumer/startup feel
+* **CareFlow AI** — emphasizes workflow
+* **PatientOS** — ambitious, platform-oriented
+
+For the hackathon, I'd use **CarePath AI**.
+
+---
+
+# CarePath AI — Hackathon PRD
+
+## 1. One-line description
+
+**CarePath AI is an AI-native patient journey platform that transforms a clinic's clinical protocols and educational materials into personalized, interactive care journeys for patients.**
+
+Instead of staff manually creating:
+
+> "Watch this video → read this PDF → complete this form → sign consent → call the nurse → schedule appointment"
+
+the clinic gives CarePath AI its protocol and documents.
+
+AI turns them into:
+
+> **Personalized patient journey → education → tasks → questions → reminders → progress → staff insights**
+
+---
+
+# 2. The problem
+
+Healthcare journeys are fragmented.
+
+A patient might receive:
+
+* PDFs
+* emails
+* phone calls
+* videos
+* consent forms
+* instructions
+* appointment reminders
+* medication instructions
+* separate portals
+
+The patient doesn't always know:
+
+**"What do I need to do next?"**
+
+Meanwhile, staff repeatedly answer the same questions and manually chase patients.
+
+EngagedMD addresses this by providing structured education, consent, tasks, questionnaires and patient journey management. ([EngagedMD][2])
+
+### Our thesis
+
+The next generation shouldn't just be a better LMS/checklist.
+
+It should be:
+
+> **AI that understands the patient's journey and dynamically guides them through it.**
+
+---
+
+# 3. Initial target market
+
+Don't start with every medical specialty.
+
+### Hackathon wedge: Fertility clinics
+
+This is a great demo because fertility journeys are:
+
+* complex
+* multi-step
+* document-heavy
+* education-heavy
+* anxiety-inducing
+* protocol-driven
+* highly personalized
+
+Examples:
+
+**IVF journey**
+
+```text
+Initial Consultation
+        ↓
+Diagnostic Testing
+        ↓
+Treatment Plan
+        ↓
+Medication Training
+        ↓
+Ovarian Stimulation
+        ↓
+Egg Retrieval
+        ↓
+Embryology
+        ↓
+Transfer
+        ↓
+Pregnancy Test
+```
+
+EngagedMD itself has extensive fertility education and workflow capabilities, including IVF, genetic testing and medication training. ([EngagedMD][1])
+
+---
+
+# 4. The killer feature
+
+## 🧠 AI Journey Builder
+
+This should be the centerpiece of your hackathon demo.
+
+Clinic administrator uploads:
+
+> `IVF_Patient_Protocol.pdf`
+
+and perhaps:
+
+> `Medication_Instructions.pdf`
+> `IVF_Consent.pdf`
+> `Clinic_FAQ.pdf`
+
+CarePath AI analyzes the documents and generates:
+
+### Patient journey
+
+```text
+IVF Treatment
+
+1. Welcome & Orientation
+2. Complete Medical History
+3. Genetic Testing
+4. Treatment Plan Review
+5. Medication Training
+6. Start Medication
+7. Monitoring Appointments
+8. Egg Retrieval
+9. Embryo Development
+10. Transfer
+11. Pregnancy Test
+```
+
+For every step AI generates:
+
+* explanation
+* educational content
+* checklist
+* questions
+* tasks
+* estimated completion time
+* required documents
+* patient-friendly explanation
+* knowledge check
+
+---
+
+# 5. AI-native experience
+
+This is where you differentiate from a traditional platform.
+
+Instead of the patient navigating 30 screens:
+
+### Patient asks:
+
+> "I'm starting IVF next week. What should I do today?"
+
+AI responds:
+
+> **You're currently in the Medication Preparation stage.**
+>
+> Today you have 3 things to complete:
+>
+> 1. Watch the 5-minute medication training
+> 2. Complete your medication readiness questionnaire
+> 3. Review your injection schedule
+>
+> You have completed 2 of 3 tasks.
+
+Then:
+
+> "What's the injection for?"
+
+AI answers **using only clinic-approved knowledge**.
+
+---
+
+# 6. Core product
+
+I would build **two applications**.
+
+## A. Clinic Dashboard
+
+For:
+
+* doctors
+* nurses
+* coordinators
+* administrators
+
+## B. Patient Portal
+
+For patients.
+
+---
+
+# 7. Clinic Dashboard
+
+### Dashboard
+
+```text
+CarePath AI
+
+Patients                     128
+Active Journeys               87
+Tasks Overdue                 14
+Patients Needing Help          8
+
+----------------------------------
+
+Patient Journey Activity
+
+Sarah Johnson       IVF      82% complete
+Michael Chen        IVF      61% complete
+Emily Smith         IVF      43% complete
+
+----------------------------------
+
+⚠ AI Attention
+
+3 patients repeatedly failed
+medication knowledge checks.
+
+2 patients haven't completed
+their consent 48h before treatment.
+```
+
+---
+
+# 8. AI Journey Builder
+
+Admin clicks:
+
+**+ Create Journey**
+
+Then:
+
+```text
+Create Patient Journey
+
+Name:
+IVF Treatment Journey
+
+Upload clinical materials:
+[ Drop PDFs here ]
+
+Specialty:
+[Fertility]
+
+Patient population:
+[Adult IVF patients]
+
+                    [Generate Journey]
+```
+
+AI generates the journey.
+
+---
+
+# 9. Journey editor
+
+Clinic can see:
+
+```text
+IVF Journey
+
+● Welcome
+│
+● Diagnostic Testing
+│
+● Treatment Plan
+│
+● Medication Training
+│
+● Stimulation
+│
+● Egg Retrieval
+│
+● Embryology
+│
+● Transfer
+│
+● Pregnancy Test
+```
+
+Clicking a stage:
+
+```text
+Medication Training
+
+AI-generated content
+
+Patient explanation
+✓
+
+Video
+✓
+
+Knowledge check
+✓
+
+Medication checklist
+✓
+
+Consent
+○
+
+Reminder
+✓
+```
+
+Clinic can edit anything AI generated.
+
+---
+
+# 10. Patient experience
+
+The patient gets:
+
+## "Your CarePath"
+
+```text
+Good morning, Sarah 👋
+
+You're 68% through your IVF journey.
+
+Today's focus
+────────────────
+
+💉 Medication Training
+5 min
+
+📋 Medication Questionnaire
+3 min
+
+📄 Review Treatment Plan
+7 min
+
+        [Continue]
+```
+
+---
+
+# 11. AI Patient Companion
+
+This is the **second major hackathon feature**.
+
+Persistent AI assistant:
+
+> "Ask me anything about your care journey."
+
+Example:
+
+**Patient**
+
+> What happens after egg retrieval?
+
+AI:
+
+> According to your clinic's treatment plan, your eggs will be assessed and monitored for development. Your next scheduled step is embryo development monitoring.
+>
+> Your clinic hasn't provided a specific timeline for your individual case, so I recommend checking your upcoming appointment or contacting your care team.
+
+This is important:
+
+### AI should NOT become a doctor.
+
+It should be:
+
+> **A navigation + education assistant grounded in clinic-approved information.**
+
+---
+
+# 12. RAG architecture
+
+Don't allow the LLM to freely answer medical questions.
+
+Use:
+
+```text
+Patient Question
+       ↓
+Intent Detection
+       ↓
+Retrieve Clinic Knowledge
+       ↓
+Relevant Documents
+       ↓
+LLM
+       ↓
+Grounded Answer
+       ↓
+Safety / Confidence Check
+       ↓
+Patient
+```
+
+For example:
+
+```text
+"What injection do I take tonight?"
+```
+
+should retrieve:
+
+```text
+patient_protocol
+medication_schedule
+clinic_instructions
+```
+
+before generating an answer.
+
+If information isn't present:
+
+> "I don't have enough information from your clinic's materials to answer that."
+
+---
+
+# 13. AI agents
+
+For the hackathon, I'd make **3 AI agents** rather than one giant agent.
+
+### Agent 1 — Journey Architect
+
+Turns:
+
+```text
+PDFs + protocols + forms
+```
+
+into:
+
+```text
+Journey
+Stages
+Tasks
+Education
+Questions
+Dependencies
+```
+
+---
+
+### Agent 2 — Patient Guide
+
+Handles:
+
+```text
+Patient questions
+Journey navigation
+Education
+Task explanation
+Progress
+```
+
+---
+
+### Agent 3 — Care Coordinator
+
+Analyzes:
+
+```text
+Patient progress
+Missed tasks
+Repeated questions
+Knowledge-check failures
+Journey bottlenecks
+```
+
+Then tells staff:
+
+> "Sarah appears confused about medication timing. She attempted the medication knowledge check three times."
+
+That's much more interesting than simply showing a progress bar.
+
+---
+
+# 14. AI-generated patient insights
+
+Clinic dashboard:
+
+```text
+AI Insights
+
+⚠ Medication Confusion
+
+7 patients struggled with
+the medication timing question.
+
+Recommended action:
+
+Create a short educational
+module explaining medication timing.
+
+[Generate Module]
+```
+
+Then AI generates:
+
+```text
+Medication Timing
+
+Why timing matters
+
+...
+
+Knowledge Check
+
+When should you take your medication?
+
+○ Before breakfast
+○ At the scheduled time
+○ Whenever convenient
+○ Before sleeping
+```
+
+That creates a **closed-loop AI system**:
+
+```text
+Patient behavior
+       ↓
+AI detects confusion
+       ↓
+AI identifies content gap
+       ↓
+AI creates improved education
+       ↓
+Patients learn
+       ↓
+AI measures comprehension
+```
+
+That's your strongest hackathon story.
+
+---
+
+# 15. Database architecture
+
+Your stack is perfect for this:
+
+```text
+Next.js
+   │
+   ├── App Router
+   ├── Server Actions / API
+   ├── React
+   └── Tailwind / shadcn
+          │
+          ↓
+       Drizzle ORM
+          │
+          ↓
+       Neon Postgres
+```
+
+AI:
+
+```text
+OpenAI
+   OR
+Claude
+```
+
+I'd make the architecture model-agnostic.
+
+```text
+AI Provider
+   │
+   ├── OpenAI
+   └── Anthropic
+```
+
+---
+
+# 16. Database schema
+
+Core tables:
+
+```text
+organizations
+users
+patients
+staff
+journeys
+journey_stages
+journey_tasks
+journey_content
+documents
+document_chunks
+patient_journeys
+patient_stage_progress
+patient_tasks
+patient_answers
+patient_questions
+ai_conversations
+ai_messages
+knowledge_checks
+knowledge_check_answers
+ai_insights
+notifications
+audit_logs
+```
+
+### Organizations
+
+```text
+id
+name
+specialty
+created_at
+```
+
+### Patients
+
+```text
+id
+organization_id
+name
+email
+dob
+created_at
+```
+
+### Journeys
+
+```text
+id
+organization_id
+name
+description
+status
+created_at
+```
+
+### Journey stages
+
+```text
+id
+journey_id
+name
+description
+position
+estimated_minutes
+```
+
+### Tasks
+
+```text
+id
+stage_id
+title
+description
+type
+required
+due_offset
+```
+
+Types:
+
+```text
+LEARN
+FORM
+CONSENT
+QUESTIONNAIRE
+VIDEO
+TASK
+APPOINTMENT
+KNOWLEDGE_CHECK
+```
+
+---
+
+# 17. AI-generated content schema
+
+Don't let AI return arbitrary text.
+
+Force structured JSON.
+
+```json
+{
+  "journey": {
+    "name": "IVF Treatment Journey",
+    "stages": [
+      {
+        "name": "Medication Training",
+        "description": "...",
+        "tasks": [
+          {
+            "type": "LEARN",
+            "title": "Medication Basics",
+            "estimatedMinutes": 5
+          },
+          {
+            "type": "KNOWLEDGE_CHECK",
+            "title": "Medication Readiness"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+This makes the AI output directly usable by your application.
+
+---
+
+# 18. Document ingestion
+
+Clinic uploads PDF.
+
+Pipeline:
+
+```text
+PDF
+ ↓
+Extract text
+ ↓
+Chunk
+ ↓
+Embedding
+ ↓
+Postgres / vector storage
+ ↓
+Retrieval
+ ↓
+LLM
+```
+
+With Neon/Postgres, you can use **pgvector** for embeddings.
+
+Conceptually:
+
+```text
+documents
+     ↓
+document_chunks
+     ↓
+embedding vector
+     ↓
+semantic search
+```
+
+---
+
+# 19. AI prompt architecture
+
+Don't have one enormous prompt.
+
+Use specialized prompts.
+
+### Journey generation
+
+```text
+SYSTEM
+
+You are a healthcare journey architect.
+
+Convert clinic-approved documents
+into a structured patient journey.
+
+Rules:
+
+1. Never invent clinical instructions.
+2. Only use information contained
+   in the provided source material.
+3. Preserve clinical terminology.
+4. Rewrite complex language into
+   patient-friendly language.
+5. Identify missing information.
+6. Return structured JSON.
+```
+
+---
+
+### Patient assistant
+
+```text
+SYSTEM
+
+You are the CarePath patient assistant.
+
+Your job is to help patients understand
+their care journey.
+
+You may:
+- explain clinic-provided information
+- explain what task comes next
+- summarize educational material
+- help navigate the journey
+
+You must not:
+- diagnose
+- prescribe
+- change treatment
+- invent medical information
+- contradict clinic instructions
+
+If information is unavailable,
+say so clearly.
+```
+
+---
+
+# 20. Hackathon MVP
+
+**Do NOT build everything.**
+
+Build this:
+
+### Clinic
+
+1. Login
+2. Create organization
+3. Upload PDF
+4. AI generates journey
+5. Review/edit journey
+6. Publish journey
+
+### Patient
+
+1. Patient receives journey
+2. Personalized dashboard
+3. Complete tasks
+4. Read AI-generated education
+5. Knowledge checks
+6. AI patient assistant
+
+### Staff
+
+1. Patient progress
+2. AI-generated insights
+3. Patients needing attention
+
+That's enough.
+
+---
+
+# 21. The demo
+
+This should be your **3-minute demo**.
+
+### Step 1
+
+Open clinic dashboard.
+
+> "Let's say we're a fertility clinic."
+
+Upload:
+
+**IVF Patient Protocol.pdf**
+
+---
+
+### Step 2
+
+Click:
+
+**Generate Patient Journey**
+
+AI creates:
+
+```text
+IVF Journey
+
+Welcome
+↓
+Testing
+↓
+Treatment Plan
+↓
+Medication Training
+↓
+Stimulation
+↓
+Egg Retrieval
+↓
+Embryo Development
+↓
+Transfer
+↓
+Pregnancy Test
+```
+
+---
+
+### Step 3
+
+Click:
+
+**Publish**
+
+---
+
+### Step 4
+
+Switch to patient.
+
+Patient sees:
+
+> **Welcome, Sarah.**
+>
+> Your personalized IVF journey is ready.
+
+---
+
+### Step 5
+
+Patient asks AI:
+
+> "What do I need to do today?"
+
+AI responds with today's tasks.
+
+---
+
+### Step 6 — **WOW moment**
+
+Patient asks:
+
+> "Why do I need to take this medication?"
+
+AI answers from the clinic's uploaded protocol.
+
+Then ask:
+
+> "What happens next?"
+
+AI understands where the patient is in the journey and answers accordingly.
+
+---
+
+### Step 7
+
+Switch back to clinic.
+
+Dashboard says:
+
+> **AI detected a patient education gap.**
+>
+> 4 patients struggled with the medication timing question.
+
+Then:
+
+**Generate Educational Module**
+
+AI generates a mini lesson + knowledge check.
+
+---
+
+# 22. What makes it "AI-native"
+
+Don't pitch this as:
+
+> "EngagedMD but with ChatGPT."
+
+Pitch:
+
+> **Traditional patient journey platforms are workflows with AI added on top. CarePath is an AI system that creates, personalizes, and continuously improves the workflow.**
+
+That's a much stronger hackathon narrative.
+
+Traditional:
+
+```text
+Human creates workflow
+        ↓
+Patient follows workflow
+        ↓
+Human monitors progress
+```
+
+CarePath:
+
+```text
+Clinic knowledge
+       ↓
+       AI
+       ↓
+Personalized journey
+       ↓
+Patient interaction
+       ↓
+AI observes behavior
+       ↓
+AI identifies friction
+       ↓
+AI improves journey
+```
+
+---
+
+# 23. Architecture
+
+```text
+                    CAREPATH AI
+                         │
+             ┌───────────┴───────────┐
+             │                       │
+       Clinic Portal           Patient Portal
+             │                       │
+             └───────────┬───────────┘
+                         │
+                    Next.js
+                         │
+             ┌───────────┴───────────┐
+             │                       │
+        Journey Engine           AI Layer
+             │                       │
+             │              ┌────────┼────────┐
+             │              │        │        │
+             │          Journey   Patient   Insight
+             │          Agent     Agent     Agent
+             │              │        │        │
+             └──────────────┴────────┴────────┘
+                            │
+                       RAG Pipeline
+                            │
+                    Clinic Documents
+                            │
+                     pgvector / Neon
+                            │
+                       PostgreSQL
+```
+
+---
+
+# 24. Recommended stack
+
+### Frontend
+
+* Next.js 15/16
+* TypeScript
+* Tailwind
+* shadcn/ui
+* React
+
+### Backend
+
+* Next.js Route Handlers
+* Server Actions
+* Drizzle ORM
+
+### Database
+
+* Neon Postgres
+* pgvector
+
+### Authentication
+
+* Clerk or Auth.js
+
+### AI
+
+**Primary:** OpenAI
+
+Use a strong model for:
+
+* journey generation
+* document reasoning
+* patient assistant
+
+Use cheaper/faster models for:
+
+* classification
+* summarization
+* simple extraction
+
+### Alternative
+
+Anthropic Claude can be plugged into the same abstraction.
+
+```typescript
+interface AIProvider {
+  generateJourney(input: JourneyInput): Promise<Journey>
+  answerPatientQuestion(input: QuestionInput): Promise<Answer>
+  generateInsight(input: InsightInput): Promise<Insight>
+}
+```
+
+---
+
+# 25. Suggested Next.js structure
+
+```text
+app/
+├── (auth)/
+├── clinic/
+│   ├── dashboard/
+│   ├── journeys/
+│   ├── patients/
+│   ├── documents/
+│   └── insights/
+│
+├── patient/
+│   ├── journey/
+│   ├── tasks/
+│   ├── learn/
+│   └── assistant/
+│
+├── api/
+│   ├── ai/
+│   │   ├── journey/
+│   │   ├── assistant/
+│   │   └── insights/
+│   ├── documents/
+│   └── patients/
+│
+└── onboarding/
+```
+
+---
+
+# 26. Hackathon MVP milestones
+
+### Phase 1 — Foundation
+
+* Next.js
+* Neon
+* Drizzle
+* Auth
+* Organization
+* Patient
+* Staff
+
+### Phase 2 — AI Journey Builder
+
+* PDF upload
+* document extraction
+* chunking
+* embeddings
+* RAG
+* journey generation
+* structured JSON
+* journey editor
+
+### Phase 3 — Patient Portal
+
+* journey timeline
+* tasks
+* educational content
+* knowledge checks
+* progress
+
+### Phase 4 — AI Assistant
+
+* patient chat
+* RAG
+* journey-aware responses
+* safety boundaries
+
+### Phase 5 — AI Insights
+
+* progress analysis
+* failed knowledge checks
+* unanswered tasks
+* patient friction
+* staff recommendations
+
+### Phase 6 — Polish
+
+* beautiful dashboard
+* animations
+* demo data
+* seeded IVF journey
+* 3-minute demo flow
+
+---
+
+# 27. Important scope decision
+
+For the hackathon, **don't build**:
+
+❌ EHR integration
+❌ Insurance verification
+❌ Real e-signature compliance
+❌ Real medical diagnosis
+❌ Medication prescribing
+❌ Real patient PHI
+❌ SMS infrastructure
+❌ Billing
+❌ Appointment scheduling integrations
+❌ 20 specialties
+
+Instead:
+
+> **Use synthetic/demo patient data and explicitly position it as a prototype.**
+
+You can demonstrate the architecture for future HIPAA-compliant deployment without claiming that the hackathon implementation itself is production HIPAA-compliant.
+
+---
+
+# 28. The pitch
+
+Your opening could be:
+
+> **Healthcare doesn't have a knowledge problem. It has a journey problem.**
+>
+> Patients receive PDFs, instructions, forms, emails and phone calls, but they still don't know what they should do next.
+>
+> CarePath AI turns a clinic's existing protocols and documents into a personalized AI-guided care journey.
+>
+> Clinics upload their protocols. AI builds the journey. Patients get an intelligent guide that understands where they are, what they've completed, and what comes next.
+>
+> And unlike a traditional workflow system, CarePath learns where patients are getting stuck and helps the clinic improve the journey.
+
+### The killer line:
+
+> **"We don't give patients another portal. We give them an AI that knows their journey."**
+
+That is the direction I'd take.
+
+And given your existing healthcare/clinical-workflow experience, this also has a natural path beyond the hackathon: **RxNote handles the clinical memory/workflow side, while CarePath could become the patient-facing journey/engagement layer.**
+
+If you want to actually build it for the hackathon, the next artifact I'd create is the **technical implementation spec**: exact Drizzle schema, Next.js routes, AI prompts, RAG pipeline, folder structure, and a **Day 1 → Day 3 build checklist**.
+
+[1]: https://www.engagedmd.com/fertility?utm_source=chatgpt.com "Fertility Clinic Automation - Save Time & See More Patients"
+[2]: https://www.engagedmd.com/learn?utm_source=chatgpt.com "Learn - Streamline Patient Care with Online Education"

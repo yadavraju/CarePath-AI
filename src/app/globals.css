@@ -1,26 +1,122 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * Aama design tokens — ported from the Vidmoro workspace palette.
+ *
+ * Warm paper rather than clinical white: cards separate by being LIGHTER than
+ * their ground instead of by borders, so the app reads calm at 1 AM. Ink is a
+ * warm near-black. Teal is the single accent (clinic-approved, on track);
+ * red and amber are reserved strictly for triage state and never decorative.
+ */
+@theme {
+  --color-canvas: #f7f5f2;
+  --color-sunken: #efebe4;
+  --color-raised: #ffffff;
+  --color-line: #e7e2da;
+  --color-paper: #fefdfb;
+  --color-blush: #fbf2ee;
+  --color-mist: #f4f4f3;
+  --color-sky: #dcebf7;
+  --color-sky-soft: #eef6fc;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-ink: #33302a;
+  --color-ink-soft: #6b655b;
+  --color-ink-faint: #9c958a;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-teal: #1b7f79;
+  --color-teal-deep: #135e59;
+  --color-teal-soft: #dff1ee;
+  --color-navy: #173a4f;
+
+  --color-alert: #b4443b;
+  --color-alert-soft: #f8e5e2;
+  --color-caution: #b87a12;
+  --color-caution-soft: #fbf0d9;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-serif: var(--font-hedvig), ui-serif, Georgia, serif;
+
+  --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-rise: rise 0.6s var(--ease-entrance) both;
+  --animate-pulse-ring: pulse-ring 1.8s ease-out infinite;
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgb(180 68 59 / 0.45); }
+    100% { box-shadow: 0 0 0 10px rgb(180 68 59 / 0); }
   }
 }
 
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* One icon weight across the product. */
+svg.lucide {
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@utility grain {
+  position: relative;
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* Marketing headline — fluid, serif, never inside the app. */
+@utility display-1 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 5.6vw, 3.9rem);
+  line-height: 1.05;
+  letter-spacing: -0.022em;
+}
+
+@utility display-2 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(1.875rem, 3.4vw, 2.6rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+@utility subtitle {
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
