@@ -19,7 +19,7 @@ const hedvig = Hedvig_Letters_Serif({
 export const metadata: Metadata = {
   title: `${BRAND.name} — ${BRAND.product}`,
   description:
-    "Clinic-approved AI companions for cash-pay specialist clinics — built from your protocols, grounded in your documents, with nurse escalation. First agent live: IVF medication co-pilot.",
+    "AI-native patient journeys for specialist clinics — built from your protocols, grounded in your documents, with nurse escalation. First agent live: IVF medication co-pilot.",
 };
 
 export const viewport: Viewport = { themeColor: "#f7f5f2" };

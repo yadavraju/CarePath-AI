@@ -116,7 +116,7 @@ export const SPECIALTIES: { id: string; icon: LucideIcon; title: string; status:
     icon: Stethoscope,
     title: "Men’s health & urology",
     status: "next",
-    stakes: "Private, cash-pay care where patients hesitate to call with questions.",
+    stakes: "Private care where patients hesitate to call with questions.",
     handles: "Procedure prep and recovery, medication protocols, follow-up testing, discreet question routing.",
   },
 ];

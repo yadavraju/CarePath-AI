@@ -1,6 +1,6 @@
 # Aama — AI companions for specialist clinics
 
-A platform for cash-pay specialist clinics, where patients pay out of pocket and the margin for error between visits is
+An AI-native patient-journey platform for specialist clinics — like EngagedMD, with an AI companion for patients and an AI copilot for clinicians. The weeks between visits are where journeys break; the margin for error there is
 small. Each patient gets a clinic-approved AI companion built from the clinic's own protocols; staff get an AI copilot and
 an exception queue. **First agent live: the IVF medication co-pilot for fertility clinics.** Other specialties on the
 landing page are roadmap and marked "Next". **Not an AI doctor** — a protocol companion, reminder system and escalation

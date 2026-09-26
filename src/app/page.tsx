@@ -7,8 +7,8 @@ import { BTN, BTN_GHOST, CARD, Chip, EYEBROW, SHELL, Wordmark } from "@/componen
 import { cn } from "@/lib/utils";
 
 /*
- * Positioning: a platform for cash-pay specialist clinics, where patients pay
- * out of pocket and the margin for error between visits is small. Fertility is
+ * Positioning: an AI-native patient-journey platform for specialist clinics —
+ * one journey with two sides (patient companion, clinician copilot). Fertility is
  * the first live agent; every other specialty is labelled "next".
  *
  * Section order follows the proven specialty-care pattern (hero → value →
@@ -151,10 +151,10 @@ function WhySpecialist() {
       <div className={`${SHELL} grid gap-12 lg:grid-cols-[0.9fr_1.1fr]`}>
         <div>
           <p className="font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-white/60">The problem</p>
-          <h2 className="display-2 mt-3 text-balance">In cash-pay specialist care, the margin for error is small.</h2>
+          <h2 className="display-2 mt-3 text-balance">The weeks between visits are where patient journeys break.</h2>
           <p className="subtitle mt-4 text-white/75">
-            Patient-journey tools turned the paper binder into videos and checklists. The weeks between visits still run on
-            PDFs, phone tag and hope.
+            Patient-journey tools turned the paper binder into videos and checklists. The daily questions, dose changes and
+            1 AM worries still run on PDFs, phone tag and hope — for patients and nurses alike.
           </p>
         </div>
         <div className="space-y-3">
@@ -466,7 +466,7 @@ function Footer() {
         <div>
           <Wordmark />
           <p className="mt-4 max-w-xs text-[14px] leading-relaxed">
-            Clinic-approved AI companions for cash-pay specialist care — built from your protocols, grounded in your documents.
+            AI-native patient journeys for specialist clinics — built from your protocols, grounded in your documents.
           </p>
         </div>
         <div>
