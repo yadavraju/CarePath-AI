@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { and, asc, eq, ne } from "drizzle-orm";
-import { Bot, BotOff, HeartPulse } from "lucide-react";
+import { BotOff, HeartPulse } from "lucide-react";
 import { AutoRefresh } from "@/components/clinic/AutoRefresh";
 import { DemoGuide } from "@/components/DemoGuide";
 import { AppShell, RailSection, type NavItem } from "@/components/shell/AppShell";
 import { Dot } from "@/components/ui";
 import { db } from "@/db";
 import { alerts, patients } from "@/db/schema";
-import { aiConfigured } from "@/lib/ai/client";
 import { getViewer, requireStaff } from "@/server/context";
 import { sweepMissed } from "@/server/reminders";
 
@@ -39,11 +38,6 @@ export default async function ClinicLayout({ children }: { children: React.React
     { href: "/clinic/settings", label: "Controls", icon: "controls" },
   ];
 
-  const ai = clinic.aiPaused
-    ? { label: "AI answers paused", cls: "bg-caution-soft text-caution", Icon: BotOff }
-    : aiConfigured()
-      ? { label: "Claude · grounded", cls: "bg-teal-soft text-teal-deep", Icon: Bot }
-      : { label: "Offline rules mode", cls: "bg-sunken text-ink-soft", Icon: BotOff };
 
   const [demoLead] = clinic.isDemo
     ? await db.select({ id: patients.id }).from(patients).where(and(eq(patients.clinicId, clinic.id), eq(patients.isDemoLead, true)))
@@ -56,9 +50,12 @@ export default async function ClinicLayout({ children }: { children: React.React
       workspaceLabel={clinic.name}
       nav={nav}
       topRight={
-        <span className={`hidden items-center gap-1.5 rounded-full px-3 py-1 font-display text-[12px] font-semibold sm:inline-flex ${ai.cls}`}>
-          <ai.Icon className="h-3.5 w-3.5" /> {ai.label}
-        </span>
+        // Only surfaced when it changes behaviour: paused AI routes every question to staff.
+        clinic.aiPaused ? (
+          <Link href="/clinic/settings" className="hidden items-center gap-1.5 rounded-full bg-caution-soft px-3 py-1 font-display text-[12px] font-semibold text-caution sm:inline-flex">
+            <BotOff className="h-3.5 w-3.5" /> AI answers paused
+          </Link>
+        ) : null
       }
       rail={
         <RailSection title={needs.length ? `Needs you · ${needs.length}` : "Needs you"}>

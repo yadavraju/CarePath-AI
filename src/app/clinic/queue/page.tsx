@@ -85,6 +85,29 @@ export default async function Queue() {
         {clinic.isDemo && <DemoClock nowLabel={updated} offset={clinic.demoOffsetMinutes} onSet={setClinicDemoClock} />}
       </div>
 
+      <details className="group rounded-2xl bg-canvas px-5 py-3 ring-1 ring-line">
+        <summary className="cursor-pointer list-none font-display text-[13.5px] font-semibold text-ink">
+          How this queue works <span className="font-normal text-ink-faint group-open:hidden">— show</span>
+        </summary>
+        <div className="mt-3 grid gap-3 pb-1 text-[13px] leading-relaxed text-ink-soft md:grid-cols-3">
+          <p>
+            <span className="mb-1 flex items-center gap-2 font-display font-semibold text-ink"><Dot tone="red" className="h-2 w-2" /> Red · review now</span>
+            A patient message matched one of your red-flag rules (checked before any AI), or AI triage judged it urgent. The
+            patient already saw your emergency instruction.
+          </p>
+          <p>
+            <span className="mb-1 flex items-center gap-2 font-display font-semibold text-ink"><Dot tone="amber" className="h-2 w-2" /> Amber · needs a human</span>
+            A dose wasn’t confirmed before its window closed, a question wasn’t covered by your approved guides, or a patient
+            asked to move or change a dose.
+          </p>
+          <p>
+            <span className="mb-1 flex items-center gap-2 font-display font-semibold text-ink"><Dot tone="teal" className="h-2 w-2" /> On track · no open signal</span>
+            Nothing needs you from the app. It is not a clinical all-clear. Open a patient to Acknowledge, mark Contacted, or
+            Resolve — every action is audited.
+          </p>
+        </div>
+      </details>
+
       <section className="overflow-hidden rounded-3xl bg-raised ring-1 ring-line" aria-label="Exception queue">
         {queue.map(({ patient, cycle, top, rest, openCount }) => {
           const tone = top.severity === "red" ? "red" : "amber";

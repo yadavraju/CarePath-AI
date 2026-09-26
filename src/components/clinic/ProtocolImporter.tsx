@@ -29,7 +29,7 @@ export function ProtocolImporter({ patients, defaultPatientId, sample }: Props) 
       if ("error" in res) return setError(res.error ?? "Couldn't parse.");
       setItems(res.result.items);
       setWarnings(res.result.warnings);
-      setEngine({ name: res.engine === "claude" ? "Claude" : "Rules parser", note: res.note });
+      setEngine({ name: res.engine === "claude" ? "AI" : "rules parser", note: res.note });
     });
 
   const update = (i: number, patch: Partial<ParsedItem>) => setItems((rows) => rows!.map((r, j) => (j === i ? { ...r, ...patch } : r)));

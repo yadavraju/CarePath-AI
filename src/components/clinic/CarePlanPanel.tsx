@@ -91,7 +91,7 @@ export function CarePlanPanel({ patientId, alias, items, library }: { patientId:
         <div className="mt-4 rounded-xl bg-sky-soft p-4 ring-1 ring-sky">
           <div className="flex items-center justify-between">
             <p className="flex items-center gap-1.5 font-display text-[13px] font-semibold text-navy">
-              <Sparkles className="h-3.5 w-3.5" /> Suggested for {alias.split(" ")[0]} · {suggest.engine === "rules" ? "rules" : "Claude"} · you decide
+              <Sparkles className="h-3.5 w-3.5" /> Suggested for {alias.split(" ")[0]} · {suggest.engine === "rules" ? "rules" : "AI"} · you decide
             </p>
             <button onClick={() => setSuggest(null)} aria-label="Dismiss suggestions" className="rounded p-1 text-ink-faint hover:text-ink">
               <X className="h-4 w-4" />
