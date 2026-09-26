@@ -51,3 +51,8 @@ shots/
 # personal notes (contain API keys)
 tech-prd
 _docs/tech-prd
+
+# A global *.json ignore rule exists on this machine; these must be committed.
+!package.json
+!package-lock.json
+!tsconfig.json
